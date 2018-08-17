@@ -3,6 +3,7 @@ package com.jxd.aidldemo;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -13,6 +14,8 @@ public class IRemouteService extends Service {
     private Person person = new Person(1,"jxd",25,"male");
     private static final String TAG = "jxdaidldemo";
     private List<Person> personList = new ArrayList<>();
+    private RemoteCallbackList<IServerSendDataToClient> mListener = new RemoteCallbackList<>();
+    private Thread myThread = null;
     public IRemouteService() {
     }
 
@@ -45,6 +48,35 @@ public class IRemouteService extends Service {
         @Override
         public List<Person> getPersonList() throws RemoteException {
             return personList;
+        }
+
+        @Override
+        public void registListener(IServerSendDataToClient listener) throws RemoteException {
+            mListener.register(listener);
+            myThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int n = mListener.beginBroadcast();
+                    for (int i = 0; i < n; i++) {
+                        IServerSendDataToClient listener = mListener.getBroadcastItem(i);
+                        if (listener != null) {
+                            try {
+                                listener.sendData("data : "+i+" n = "+n);
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                }
+            });
+            myThread.start();
+        }
+
+        @Override
+        public void unregistListener(IServerSendDataToClient listener) throws RemoteException {
+            mListener.finishBroadcast();
+            mListener.unregister(listener);
         }
     };
 }

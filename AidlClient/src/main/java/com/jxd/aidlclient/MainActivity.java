@@ -10,6 +10,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.jxd.aidldemo.IAidlService;
+import com.jxd.aidldemo.IServerSendDataToClient;
 import com.jxd.aidldemo.Person;
 
 import java.util.ArrayList;
@@ -30,6 +31,14 @@ public class MainActivity extends Activity {
         bindService(intent1,conn,BIND_AUTO_CREATE);
     }
 
+    IServerSendDataToClient serverSendDataToClient = new IServerSendDataToClient.Stub() {
+
+        @Override
+        public void sendData(String ccc) throws RemoteException {
+            Log.d(TAG,"ccc : "+ccc);
+        }
+    };
+
     private ServiceConnection conn = new ServiceConnection() {
 
         //绑定服务，回调onBind()方法
@@ -37,7 +46,9 @@ public class MainActivity extends Activity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG,"onServiceConnected");
             iAidlService = IAidlService.Stub.asInterface(service);
+
             try {
+                iAidlService.registListener(serverSendDataToClient);
                 iAidlService.basicTypes(1,20000000,true,32.1f,4.12345,"basicTypes ok");
                 Person p = iAidlService.getPerson();
                 p = new Person(1,"bingchao",23,"male");
@@ -66,6 +77,14 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         Log.d(TAG,"onDestroy");
-        unbindService(conn);
+        if (conn != null && serverSendDataToClient.asBinder().isBinderAlive()) {
+            try {
+                iAidlService.unregistListener(serverSendDataToClient);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            unbindService(conn);
+        }
+
     }
 }

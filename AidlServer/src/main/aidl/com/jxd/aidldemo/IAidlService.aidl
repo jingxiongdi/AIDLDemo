@@ -3,6 +3,7 @@ package com.jxd.aidldemo;
 
 // Declare any non-default types here with import statements
 import com.jxd.aidldemo.Person;
+import com.jxd.aidldemo.IServerSendDataToClient;
 interface IAidlService {
     /**
      * Demonstrates some basic types that you can use as parameters
@@ -16,4 +17,8 @@ interface IAidlService {
     Person getPerson();
 
     List<Person> getPersonList();
+
+    void registListener(IServerSendDataToClient listener);
+
+    void unregistListener(IServerSendDataToClient listener);
 }

@@ -65,13 +65,22 @@ public class IRemouteService extends Service {
                         if (listener != null) {
                             try {
                                 listener.sendData("data : "+i+" n = "+n);
-                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.testimg);
+                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.testimghighq);
 
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                               //测试aidl通信能否满足实时视频的传输要求
                                 byte[] datas = baos.toByteArray();
-                                listener.sendByteArray(datas);
-                                Log.d(TAG,"send byte[] success");
+                                for(int k = 0;k<100;k++){
+                                    try {
+                                        Thread.sleep(50);
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    }
+                                    listener.sendByteArray(datas);
+                                    Log.d(TAG,"send byte[] success");
+                                }
+
 
                             } catch (RemoteException e) {
                                 e.printStackTrace();

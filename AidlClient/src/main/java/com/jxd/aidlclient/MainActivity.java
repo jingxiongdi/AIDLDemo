@@ -44,15 +44,15 @@ public class MainActivity extends Activity {
         @Override
         public void sendByteArray(byte[] data) throws RemoteException {
             Log.d(TAG,"getbyte[] success length : "+data.length);
-            final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ImageView imageView = (ImageView) findViewById(R.id.picture);
-                    imageView.setImageBitmap(bitmap);
-                }
-            });
+//            final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+//
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    ImageView imageView = (ImageView) findViewById(R.id.picture);
+//                    imageView.setImageBitmap(bitmap);
+//                }
+//            });
 
         }
     };

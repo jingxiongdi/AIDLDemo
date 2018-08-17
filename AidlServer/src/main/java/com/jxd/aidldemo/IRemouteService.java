@@ -2,11 +2,14 @@ package com.jxd.aidldemo;
 
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +65,14 @@ public class IRemouteService extends Service {
                         if (listener != null) {
                             try {
                                 listener.sendData("data : "+i+" n = "+n);
+                                Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.mipmap.testimg);
+
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                byte[] datas = baos.toByteArray();
+                                listener.sendByteArray(datas);
+                                Log.d(TAG,"send byte[] success");
+
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                             }

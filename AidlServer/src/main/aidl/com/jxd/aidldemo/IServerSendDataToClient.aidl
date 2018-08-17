@@ -5,4 +5,7 @@ package com.jxd.aidldemo;
 
 interface IServerSendDataToClient {
    void sendData(String ccc);
+   //in表示从客户端到服务器
+   //  out表示服务器到客户端
+   void sendByteArray(inout byte[] data);
 }

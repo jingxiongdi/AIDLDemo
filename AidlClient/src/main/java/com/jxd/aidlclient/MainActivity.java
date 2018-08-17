@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.jxd.aidldemo.IAidlService;
 import com.jxd.aidldemo.IServerSendDataToClient;
@@ -36,6 +39,21 @@ public class MainActivity extends Activity {
         @Override
         public void sendData(String ccc) throws RemoteException {
             Log.d(TAG,"ccc : "+ccc);
+        }
+
+        @Override
+        public void sendByteArray(byte[] data) throws RemoteException {
+            Log.d(TAG,"getbyte[] success length : "+data.length);
+            final Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ImageView imageView = (ImageView) findViewById(R.id.picture);
+                    imageView.setImageBitmap(bitmap);
+                }
+            });
+
         }
     };
 
